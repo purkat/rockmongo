@@ -228,6 +228,22 @@ class VarExportor {
 				case "MongoCode":
 					$this->_jsonParams[$this->_paramIndex] = $var->__toString();
 					return $this->_param($this->_paramIndex);
+                case "MongoBinData":
+                    $prefix = 'BINARY' . $var->type;
+                    switch ($var->type) {
+                        case MongoBinData::UUID:
+                            $prefix = "UUID";
+                            break;
+                        case 4:
+                        #case MongoBinData::UUID_RFC4122:
+                            $prefix = "UUID_RFC4122";
+                            break;
+                        default:
+                            # Empty
+                            ;
+                    }
+                    $this->_jsonParams[$this->_paramIndex] = $prefix . '("' . bin2hex($var->bin) . '")';
+                    return $this->_param($this->_paramIndex);
 				default:
         			if (method_exists($var, "__toString")) {
         				return $var->__toString();
